@@ -1,6 +1,8 @@
 """Ініціалізація модулів Initialization of modules"""
 from aiogram import types, Dispatcher
 from create_bot import dp, bot
+from keyboards import kb_client
+from aiogram.types import ReplyKeyboardRemove
 
 # @dp.message_handler(commands=['start', 'help'])
 async def command_start(massage : types.message): # Функція, виводить інформацію про можливості бота; The function displays information about the bot's capabilities
@@ -11,7 +13,7 @@ async def command_start(massage : types.message): # Функція, виводи
         '\n- Команда /del_product - видаляє останній доданий продукт з історії спожитих продуктів.' + 
         '\n- Команда /view_day - показує всю інформацію про спожиті продукти за день та розраховує загальний рівень фенілаланіну.' + 
         '\n- Команда /view_week - показує всю інформацію про спожиті продукти за тиждень та розраховує загальний рівень фенілаланіну.' + 
-        '\n- Команда /view_month - показує всю інформацію про спожиті продукти за місяць та розраховує загальний рівень фенілаланіну.')
+        '\n- Команда /view_month - показує всю інформацію про спожиті продукти за місяць та розраховує загальний рівень фенілаланіну.', reply_markup=kb_client)
         await massage.delete()
     except:
         await massage.reply('Спілкування з ботом через особисті повідомлення, напишіть йому: \nhttps://t.me/PKUDiaryBot')
@@ -19,7 +21,7 @@ async def command_start(massage : types.message): # Функція, виводи
 # @dp.message_handler(commands=['add_product'])
 async def add_product_cm(massage : types.message):
     await bot.send_message(massage.from_user.id, 
-        'Продукт успішно додано!')
+        'Продукт успішно додано!', reply_markup=ReplyKeyboardRemove())
 
 # @dp.message_handler(commands=['del_product'])
 async def del_product_cm(massage : types.message):
