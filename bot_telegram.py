@@ -2,28 +2,18 @@
 from aiogram.utils import executor
 from create_bot import dp
 from handlers import client, admin
-
+from database import pku_db
+# Файл входу, старт бота Login file, start the bot
 async def on_startup(_):
     print('Бот вийшов у онлайн.')
+    pku_db.sql_start()
 
 client.register_handlers_client(dp)
-"""Клієнтська частина"""
-
-"""Адмінська частина"""
-"""Загальна частина"""
-# @dp.message_handler()
-# async def echo_send(massage : types.message):
-#     if massage.text == 'Додати продукт':
-#         await massage.answer('Продукт успішно додано!')
-#     # await massage.answer(massage.text)
-#     elif massage.text == 'Видалити продукт':
-#         await bot.send_message(massage.from_user.id, 'Продукт успішно видалено!')
-#     # Код команд на перегляд інформації у базі даних.
-#     elif massage.text == 'Переглянути історію спожитих продуктів за день':
-#         await massage.answer('Перегляд історії спожитих продуктів за день:')
-#     elif massage.text == 'Переглянути історію спожитих продуктів за тиждень':
-#         await massage.answer('Перегляд історії спожитих продуктів за тиждень:')
-#     elif massage.text == 'Переглянути історію спожитих продуктів за місяць':
-#         await massage.answer('Перегляд історії спожитих продуктів за місяць:')
+admin.register_handlers_admin(dp)
+"""
+{"message_id": 95, "from": {"id": 309565384, "is_bot": false, "first_name": "Женя 🇺🇦", "username": "JekaK21", "language_code": "uk"}, 
+"chat": {"id": 309565384, "first_name": "Женя 🇺🇦", "username": "JekaK21", "type": "private"}, "date": 1674512522, "text": "/start", 
+"entities": [{"type": "bot_command", "offset": 0, "length": 6}]}
+"""
 
 executor.start_polling(dp, skip_updates=True, on_startup=on_startup) # Команда старта бота; Bot start command
