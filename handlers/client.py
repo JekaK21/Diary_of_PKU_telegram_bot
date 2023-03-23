@@ -4,17 +4,15 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.filters import Text
 from create_bot import dp, bot
-from keyboards import kb_client, url_client
+from keyboards import kb_client, url
 from database import pku_db
-
-# Зробити: Розділити функції по ролям на адміністратора і на клієнта (коли всі основні функції будуть зроблені).
 
 # Функція старту бота
 async def command_start(message : types.Message): # Функція, виводить інструкцію про можливості бота;
     try: # Перевірка чи є вже чат розмови з ботом; Checking if there is already a chat conversation with the bot
         await bot.send_message(message.from_user.id, 
         'Бот дозволяє за допомогою навігаційних кнопок використовувати різні функції.' + 
-        '\nЯк працює бот, дивись в інструкції', reply_markup=url_client)
+        '\nЯк працює бот, дивись в інструкції', reply_markup=url)
         await message.delete()
     except:
         await message.reply('Спілкування з ботом через особисті повідомлення, напишіть йому: \nhttps://t.me/PKUDiaryBot')
@@ -30,9 +28,6 @@ class FSMAdd(StatesGroup):
     Unit = State()
     Num = State()
     Date = State()
-
-class FSMDelete(StatesGroup):
-    id_product = State()
 
 # Функція точки старту обробки додавання повідомлень;
 async def add_product(message : types.Message):
@@ -88,9 +83,6 @@ async def cm_reg_weight(message : types.Message, state: FSMContext):
 async def cm_reg_unit(message : types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['Unit'] = int(message.text)
-
-    # async with state.proxy() as data:
-    #     await message.reply(str(data))
     await FSMAdd.next()
     await message.reply('Кількість')
     
@@ -104,27 +96,9 @@ async def cm_reg_date(message : types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['Date'] = message.text
     print(state)
-    await message.reply(f'Вітаю, {message.from_user.first_name} ваш продукт успішно додано!', reply_markup=kb_client)
+    await message.reply(f'Вітаю, {message.from_user.first_name} ваш продукт успішно додано!')
     await pku_db.sql_register_products(state, User_ID)
     await state.finish()
-
-# Функція точки старту обробки видалення повідомлень;
-async def del_product(message : types.Message):
-    await FSMDelete.id_product.set()
-    await message.reply('Напиши id продукту, що треба видалити.', reply_markup=kb_client)
-
-async def set_productId(message : types.Message, state: FSMContext):
-    try:
-        async with state.proxy() as data:
-            data['id_product'] = int(message.text)
-        # print(state)
-        await message.reply(f'Вітаю, {message.from_user.first_name} ваш продукт успішно видалено!')
-        await pku_db.sql_delete(state)
-        await state.finish()
-    except Exception as e:
-        print(e)
-        await message.reply(message.from_user.id, f'{message.from_user.first_name} у записі були букви!')
-        await message.delete()
         
 # Функція перегляду;
 async def view_month_cm(message : types.Message):
@@ -147,6 +121,4 @@ def register_handlers_client(dp : Dispatcher): # Декоратор, оброб�
     dp.register_message_handler(cm_reg_unit, state=FSMAdd.Unit)
     dp.register_message_handler(cm_reg_num, state=FSMAdd.Num)
     dp.register_message_handler(cm_reg_date, state=FSMAdd.Date)
-    dp.register_message_handler(del_product, commands=['del_product'], state=None)
-    dp.register_message_handler(set_productId, state=FSMDelete.id_product)
     dp.register_message_handler(view_month_cm, commands=['view'])
