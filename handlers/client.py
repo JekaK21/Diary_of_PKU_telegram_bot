@@ -7,6 +7,8 @@ from create_bot import dp, bot
 from keyboards import kb_client, url_client
 from database import pku_db
 
+# Зробити: Розділити функції по ролям на адміністратора і на клієнта (коли всі основні функції будуть зроблені).
+
 # Функція старту бота
 async def command_start(message : types.Message): # Функція, виводить інструкцію про можливості бота;
     try: # Перевірка чи є вже чат розмови з ботом; Checking if there is already a chat conversation with the bot
@@ -26,14 +28,16 @@ class FSMAdd(StatesGroup):
     Protein = State()
     Weight = State()
     Unit = State()
-    # Num = State()
-    # Date = State()
+    Num = State()
+    Date = State()
 
 class FSMDelete(StatesGroup):
     id_product = State()
 
 # Функція точки старту обробки додавання повідомлень;
 async def add_product(message : types.Message):
+    global User_ID
+    User_ID = str(message.from_user.id)
     await FSMAdd.name_long.set()
     await message.reply('Повна назва продукту', reply_markup=kb_client)
 
@@ -61,7 +65,7 @@ async def cm_reg_categ(message : types.Message, state: FSMContext):
     async with state.proxy() as data:
         data['Categ'] = int(message.text)
     await FSMAdd.next()
-    await message.reply('Фенілаланін продукту')
+    await message.reply('Фенілаланін продукту за 100г.')
 
 async def cm_reg_fa(message : types.Message, state: FSMContext):
     async with state.proxy() as data:
@@ -87,25 +91,22 @@ async def cm_reg_unit(message : types.Message, state: FSMContext):
 
     # async with state.proxy() as data:
     #     await message.reply(str(data))
-    # await FSMAdmin.next()
-    # await message.reply('Кількість')
+    await FSMAdd.next()
+    await message.reply('Кількість')
+    
+async def cm_reg_num(message : types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['Num'] = int(message.text)
+    await FSMAdd.next()
+    await message.reply('Дата споживання')
+
+async def cm_reg_date(message : types.Message, state: FSMContext):
+    async with state.proxy() as data:
+        data['Date'] = message.text
+    print(state)
     await message.reply(f'Вітаю, {message.from_user.first_name} ваш продукт успішно додано!', reply_markup=kb_client)
-
-    await pku_db.sql_register_products(state)
+    await pku_db.sql_register_products(state, User_ID)
     await state.finish()
-
-# async def cm_reg_num(message : types.Message, state: FSMContext):
-#     async with state.proxy() as data:
-#         data['Num'] = int(message.text)
-#     await FSMAdmin.next()
-#     await message.reply('Дата споживання')
-
-# async def cm_reg_date(message : types.Message, state: FSMContext):
-#     async with state.proxy() as data:
-#         data['Date'] = message.text
-#     await message.reply(f'Вітаю, {message.from_user.first_name} ваш продукт успішно додано!', reply_markup=kb_client)
-#     await pku_db.sql_register_products(state)
-#     await state.finish()
 
 # Функція точки старту обробки видалення повідомлень;
 async def del_product(message : types.Message):
@@ -144,6 +145,8 @@ def register_handlers_client(dp : Dispatcher): # Декоратор, оброб�
     dp.register_message_handler(cm_reg_protein, state=FSMAdd.Protein)
     dp.register_message_handler(cm_reg_weight, state=FSMAdd.Weight)
     dp.register_message_handler(cm_reg_unit, state=FSMAdd.Unit)
+    dp.register_message_handler(cm_reg_num, state=FSMAdd.Num)
+    dp.register_message_handler(cm_reg_date, state=FSMAdd.Date)
     dp.register_message_handler(del_product, commands=['del_product'], state=None)
     dp.register_message_handler(set_productId, state=FSMDelete.id_product)
     dp.register_message_handler(view_month_cm, commands=['view'])

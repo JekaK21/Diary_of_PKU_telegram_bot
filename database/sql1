@@ -1,0 +1,6 @@
+SELECT p.Name_long, p.Name_short, c.Name_category, c.Kod_categ, p.FA, p.Protein, p.Weight, u.Name, u.Cod, r.[When], r.Num
+FROM products AS p LEFT JOIN registration AS r ON p.ID_products_prod = r.ID_products_reg 
+        INNER JOIN category AS c ON p.ID_categ = c.ID_category
+        INNER JOIN units AS U ON p.ID_unit = u.ID_unit_units
+
+'SELECT * FROM products AS p LEFT JOIN registration AS r ON p.ID_products_prod = r.ID_products_reg'
