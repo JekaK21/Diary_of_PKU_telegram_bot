@@ -69,9 +69,9 @@ async def cm_reg_categ(message : types.Message, state: FSMContext):
 async def cm_reg_fa(message : types.Message, state: FSMContext):
     try:
         async with state.proxy() as data:
-            data['FA'] = int(message.text)
+            data['FA'] = float(message.text)
         await FSMAdd.next()
-        await message.reply('Білок продукту')
+        await message.reply('Білок продукту за 100г.')
     except Exception as e:
         print(e)
         await message.reply('Виникла помилка, ви ввели не ціле число!')
@@ -79,7 +79,7 @@ async def cm_reg_fa(message : types.Message, state: FSMContext):
 async def cm_reg_protein(message : types.Message, state: FSMContext):
     try:
         async with state.proxy() as data:
-            data['Protein'] = int(message.text)
+            data['Protein'] = float(message.text)
         await FSMAdd.next()
         await message.reply('Вага продукту')
     except Exception as e:
@@ -127,7 +127,7 @@ async def cm_reg_date(message : types.Message, state: FSMContext):
 # Функція перегляду записів; Record viewing function
 async def view_month_cm(message : types.Message):
     await bot.send_message(message.from_user.id, 
-        f'Перегляд історії спожитих продуктів {message.from_user.first_name} за місяць:')
+        f'Перегляд історії спожитих продуктів {message.from_user.first_name}:')
     await pku_db.sql_view_month(message)
 
 # Загальний декоратор функцій; Generic function decorator
