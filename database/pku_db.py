@@ -1,9 +1,7 @@
 """Ініціалізація модулів Initialization of modules"""
 import sqlite3 as sq
 import traceback
-from create_bot import dp, bot
 from keyboards import kb, prev_kb, next_kb
-from aiogram import types
 from aiogram.types import CallbackQuery
 
 # Ініціалізація бази даних; Database initialization
@@ -61,9 +59,9 @@ async def sql_view_month(message):
             FROM products AS p LEFT JOIN registration AS r ON p.ID_products_prod = r.ID_products_reg INNER JOIN category AS c ON p.ID_categ = c.ID_category \
             INNER JOIN units AS u ON p.ID_unit = u.ID_unit_units"
         note = cur.execute(select).fetchall()
-        msg_text = 'ID Продукту - {}\n' 'Повна назва продукту - {}\n' 'Коротка назва - {}\n'\
-                    'Категорія - {}\n' 'Фенілаланін - {}\n' 'Білок - {}\n' 'Вага - {}\n'\
-                    'Одиниця виміру - {}\n' 'Кількість - {}\n' 'Дата - {}\n'
+        msg_text = 'ID Продукту; Product ID - {}\n' 'Повна назва продукту; Full product name - {}\n' 'Коротка назва; Short name - {}\n'\
+                    'Категорія; Category - {}\n' 'Фенілаланін; Phenylalanine - {}\n' 'Білок; Protein - {}\n' 'Вага; Weight - {}\n'\
+                    'Одиниця виміру; Unit - {}\n' 'Кількість; Number - {}\n' 'Дата; Date - {}\n'
         prod_info = note[0]
         current_idx = prod_info[0]
         await message.answer(msg_text.format(prod_info[0], prod_info[1], prod_info[2], prod_info[3], prod_info[4],
@@ -95,5 +93,6 @@ async def inline_bnts_logic(query: CallbackQuery):
             prod_info[5], prod_info[6], prod_info[7], prod_info[9], prod_info[8]),
             reply_markup=keyboard)
     except Exception as e:
-        await query.answer('Неможливо відредагувати це повідомлення. Будь-ласка, видаліть його і викличте команду перегляду знову.', show_alert=True)
+        await query.answer('Неможливо відредагувати це повідомлення. Будь-ласка, видаліть його і викличте команду перегляду знову. \
+                           This message cannot be edited. Please delete it and invoke the view command again.\n', show_alert=True)
         print(e, '\nПомилка:\n', traceback.format_exc())

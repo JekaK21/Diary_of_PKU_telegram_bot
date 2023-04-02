@@ -28,14 +28,15 @@ ID = None
 async def make_changes(message : types.Message):
     global ID
     ID = message.from_user.id
-    await bot.send_message(message.from_user.id, f'Добрий день, адміністратор {message.from_user.first_name}!', reply_markup=kb_admin)
+    await bot.send_message(message.from_user.id, f'Добрий день, адміністратор {message.from_user.first_name}!\
+                           \nGood afternoon, administrator {message.from_user.first_name}!', reply_markup=kb_admin)
     await message.delete()
 
 # Функція точки старту обробки додавання повідомлень; The function of the starting point of the processing of adding messages
 async def add_product_ad(message : types.Message):
     if message.from_user.id == ID:
         await FSMAdmin.name_long.set()
-        await message.reply('Повна назва продукту', reply_markup=kb_admin)
+        await message.reply('Повна назва продукту \nFull product name', reply_markup=kb_admin)
 
 # Вихід зі станів; Exiting states
 async def cancel_handler_ad(message : types.Message, state: FSMContext):
@@ -51,14 +52,14 @@ async def cm_reg_name_l(message : types.Message, state: FSMContext):
         async with state.proxy() as data:
             data['name_long'] = message.text
         await FSMAdmin.next()
-        await message.reply('Коротка назва продукту')
+        await message.reply('Коротка назва продукту \nShort product name')
 
 async def cm_reg_name_s(message : types.Message, state: FSMContext):
     if message.from_user.id == ID:
         async with state.proxy() as data:
             data['name_short'] = message.text
         await FSMAdmin.next()
-        await message.reply('Категорія продукту')
+        await message.reply('Категорія продукту \nProduct category')
 
 async def cm_reg_categ(message : types.Message, state: FSMContext):
     try:    
@@ -66,10 +67,10 @@ async def cm_reg_categ(message : types.Message, state: FSMContext):
             async with state.proxy() as data:
                 data['Categ'] = int(message.text)
             await FSMAdmin.next()
-            await message.reply('Фенілаланін продукту за 100г.')
+            await message.reply('Фенілаланін продукту за 100г. \nPhenylalanine of the product per 100g.')
     except Exception as e:
         print(e)
-        await message.reply('Виникла помилка, ви ввели не ціле число!')
+        await message.reply('Виникла помилка, ви ввели не ціле число! \nAn error occurred, you did not enter an integer!')
 
 async def cm_reg_fa(message : types.Message, state: FSMContext):
     try:    
@@ -77,10 +78,10 @@ async def cm_reg_fa(message : types.Message, state: FSMContext):
             async with state.proxy() as data:
                 data['FA'] = float(message.text)
             await FSMAdmin.next()
-            await message.reply('Білок продукту за 100г.')
+            await message.reply('Білок продукту за 100г. \nProduct protein per 100g.')
     except Exception as e:
         print(e)
-        await message.reply('Виникла помилка, ви ввели не ціле число!')
+        await message.reply('Виникла помилка, ви ввели не число! \nAn error occurred, you entered the wrong number!')
 
 async def cm_reg_protein(message : types.Message, state: FSMContext):
     try:    
@@ -88,10 +89,10 @@ async def cm_reg_protein(message : types.Message, state: FSMContext):
             async with state.proxy() as data:
                 data['Protein'] = float(message.text)
             await FSMAdmin.next()
-            await message.reply('Вага продукту')
+            await message.reply('Вага продукту \nProduct weight')
     except Exception as e:
         print(e)
-        await message.reply('Виникла помилка, ви ввели не ціле число!')
+        await message.reply('Виникла помилка, ви ввели не число! \nAn error occurred, you entered the wrong number!')
 
 async def cm_reg_weight(message : types.Message, state: FSMContext):
     try:
@@ -99,10 +100,10 @@ async def cm_reg_weight(message : types.Message, state: FSMContext):
             async with state.proxy() as data:
                 data['Weight'] = int(message.text)
             await FSMAdmin.next()
-            await message.reply('Одиниця виміру')
+            await message.reply('Одиниця виміру \nUnit')
     except Exception as e:
         print(e)
-        await message.reply('Виникла помилка, ви ввели не ціле число!')
+        await message.reply('Виникла помилка, ви ввели не ціле число! \nAn error occurred, you did not enter an integer!')
 
 async def cm_reg_unit(message : types.Message, state: FSMContext):
     try:
@@ -110,10 +111,10 @@ async def cm_reg_unit(message : types.Message, state: FSMContext):
             async with state.proxy() as data:
                 data['Unit'] = int(message.text)
             await FSMAdmin.next()
-            await message.reply('Кількість')
+            await message.reply('Кількість \nNumber')
     except Exception as e:
         print(e)
-        await message.reply('Виникла помилка, ви ввели не ціле число!')
+        await message.reply('Виникла помилка, ви ввели не ціле число! \nAn error occurred, you did not enter an integer!')
     
 async def cm_reg_num(message : types.Message, state: FSMContext):
     try:    
@@ -121,17 +122,18 @@ async def cm_reg_num(message : types.Message, state: FSMContext):
             async with state.proxy() as data:
                 data['Num'] = int(message.text)
             await FSMAdmin.next()
-            await message.reply('Дата споживання')
+            await message.reply('Дата споживання \nDate of consumption')
     except Exception as e:
         print(e)
-        await message.reply('Виникла помилка, ви ввели не ціле число!')
+        await message.reply('Виникла помилка, ви ввели не ціле число! \nAn error occurred, you did not enter an integer!')
 
 async def cm_reg_date(message : types.Message, state: FSMContext):
     if message.from_user.id == ID:
         async with state.proxy() as data:
             data['Date'] = message.text
         print(state)
-        await message.reply(f'Вітаю, {message.from_user.first_name} ваш продукт успішно додано!', reply_markup=kb_admin)
+        await message.reply(f'Вітаю, {message.from_user.first_name} ваш продукт успішно додано! \
+                        \nCongratulations, {message.from_user.first_name}, your product has been successfully added!', reply_markup=kb_admin)
         await pku_db.sql_register_products(state, str(ID))
         await state.finish()
 
@@ -140,31 +142,33 @@ async def del_product_ad(message : types.Message):
     try:
         if message.from_user.id == ID:
             await FSMDelete.id_product.set()
-            await message.reply('Напиши id продукту, що треба видалити.', reply_markup=kb_admin)
+            await message.reply('Напиши id продукту, що треба видалити. \nWrite the id of the product to be deleted.', reply_markup=kb_admin)
     except Exception as e:
         print(e)
-        await message.reply('Виникла помилка, ви ввели не ціле число!')
+        await message.reply('Виникла помилка, ви ввели не ціле число! \nAn error occurred, you did not enter an integer!')
 
 async def set_productId(message : types.Message, state: FSMContext):
     try:
         if message.from_user.id == ID:
             async with state.proxy() as data:
                 data['id_product'] = int(message.text)
-            # print(state)
-            await message.reply(f'Вітаю, {message.from_user.first_name} ваш продукт успішно видалено!')
+            await message.reply(f'Вітаю, {message.from_user.first_name} ваш продукт успішно видалено! \
+                                \nCongratulations, {message.from_user.first_name}, your product has been successfully removed! ')
             await pku_db.sql_delete(state)
             await state.finish()
     except Exception as e:
         print(e)
         if message.from_user.id == ID:
-            await message.reply(message.from_user.id, f'{message.from_user.first_name} у записі були букви!')
+            await message.reply(message.from_user.id, f'{message.from_user.first_name} у записі були букви! \
+                                \n{message.from_user.first_name} there were letters in the record!')
             await message.delete()
         
 # Функція перегляду записів; Record viewing function
 async def view_ad(message : types.Message):
     if message.from_user.id == ID:
         await bot.send_message(message.from_user.id, 
-            f'Перегляд історії спожитих продуктів {message.from_user.first_name}:')
+            f'Перегляд історії спожитих продуктів {message.from_user.first_name}:\
+            \nViewing the history of consumed products {message.from_user.first_name}:')
         await pku_db.sql_view_month(message)
 
 # Загальний декоратор функцій; Generic function decorator

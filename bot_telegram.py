@@ -8,6 +8,7 @@ async def on_startup(_):
     print('Бот вийшов у онлайн.')
     pku_db.sql_start()
 
+# Реєстрація хендлірів; Registration of handlers
 client.register_handlers_client(dp)
 admin.register_handlers_admin(dp)
 
