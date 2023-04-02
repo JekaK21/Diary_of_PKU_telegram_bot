@@ -10,7 +10,8 @@ next = InlineKeyboardButton('->', callback_data='next')
 prev = InlineKeyboardButton('<-', callback_data='prev')
 
 # Заміняє звичайну клав-ру на кнопки; Replaces the usual keyboard with buttons
-url_info = InlineKeyboardButton(text='Дивитись інструкцію', url='https://docs.google.com/document/d/1BllFcW2WAJjunn8_1yRox-jM75lK1O6NWZjhyyK15bI/edit?usp=sharing')
+url_info = InlineKeyboardButton(text='Дивитись інструкцію; See the instruction',\
+                                 url='https://docs.google.com/document/d/1BllFcW2WAJjunn8_1yRox-jM75lK1O6NWZjhyyK15bI/edit?usp=sharing')
 kb_client = ReplyKeyboardMarkup(resize_keyboard=True)
 url = InlineKeyboardMarkup(row_width=1)
 kb = InlineKeyboardMarkup().row(prev, next)
