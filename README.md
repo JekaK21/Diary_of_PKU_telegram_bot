@@ -9,4 +9,4 @@ English version.
 Topic: Telegram bot, which provides an opportunity to monitor the diet of a person with a special disease.
 This project is my bachelor thesis. The Telegram bot takes the user's input and calculates the level of phenylalanine (FA) on this basis with the ability to view the history of consumed products. The user can add products to his diet and view them. The bot is primarily being developed to help people with the rare disease Phenylketonuria monitor their diet.
 Phenylketonuria (PKU) is an inborn error of metabolism that results in decreased metabolism of the amino acid phenylalanine. Untreated PKU can lead to intellectual disability, seizures, behavioral problems, and mental disorders[[2]](https://en.wikipedia.org/wiki/Phenylketonuria). People with phenylketonuria adhere to a special diet, removing certain foods from the diet, namely: meat, fish, cheese, milk, peas, beans, nuts, halva and flour products. Mixtures (berlofen, lafenalac, protein hydrolyzate) containing various amino acids except phenylalanine are prescribed[[1]]
-([https://en.wikipedia.org/wiki/Phenylketonuria]).
+(https://en.wikipedia.org/wiki/Phenylketonuria).
