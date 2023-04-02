@@ -7,7 +7,7 @@ from create_bot import dp, bot
 from keyboards import kb_client, url
 from database import pku_db
 
-# Функція старту бота
+# Функція старту бота; Bot start function
 async def command_start(message : types.Message): # Функція, виводить інструкцію про можливості бота;
     try: # Перевірка чи є вже чат розмови з ботом; Checking if there is already a chat conversation with the bot
         await bot.send_message(message.from_user.id, 
@@ -17,7 +17,7 @@ async def command_start(message : types.Message): # Функція, виводи
     except:
         await message.reply('Спілкування з ботом через особисті повідомлення, напишіть йому: \nhttps://t.me/PKUDiaryBot')
 
-# Класи змінних, що представляють стовпці у базі даних;
+# Класи змінних, що представляють стовпці у базі даних; Variable classes representing columns in a database
 class FSMAdd(StatesGroup):
     name_long = State()
     name_short = State()
@@ -29,14 +29,14 @@ class FSMAdd(StatesGroup):
     Num = State()
     Date = State()
 
-# Функція точки старту обробки додавання повідомлень;
+# Функція точки старту обробки додавання повідомлень; The function of the starting point of the processing of adding messages
 async def add_product(message : types.Message):
     global User_ID
     User_ID = str(message.from_user.id)
     await FSMAdd.name_long.set()
     await message.reply('Повна назва продукту', reply_markup=kb_client)
 
-# Вихід зі станів
+# Вихід зі станів; Exiting states
 async def cancel_handler(message : types.Message, state: FSMContext):
     current_state = await state.get_state()
     if current_state is None:
@@ -57,40 +57,64 @@ async def cm_reg_name_s(message : types.Message, state: FSMContext):
     await message.reply('Категорія продукту')
 
 async def cm_reg_categ(message : types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['Categ'] = int(message.text)
-    await FSMAdd.next()
-    await message.reply('Фенілаланін продукту за 100г.')
+    try:
+        async with state.proxy() as data:
+            data['Categ'] = int(message.text)
+        await FSMAdd.next()
+        await message.reply('Фенілаланін продукту за 100г.')
+    except Exception as e:
+        print(e)
+        await message.reply('Виникла помилка, ви ввели не ціле число!')
 
 async def cm_reg_fa(message : types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['FA'] = int(message.text)
-    await FSMAdd.next()
-    await message.reply('Білок продукту')
+    try:
+        async with state.proxy() as data:
+            data['FA'] = int(message.text)
+        await FSMAdd.next()
+        await message.reply('Білок продукту')
+    except Exception as e:
+        print(e)
+        await message.reply('Виникла помилка, ви ввели не ціле число!')
 
 async def cm_reg_protein(message : types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['Protein'] = int(message.text)
-    await FSMAdd.next()
-    await message.reply('Вага продукту')
+    try:
+        async with state.proxy() as data:
+            data['Protein'] = int(message.text)
+        await FSMAdd.next()
+        await message.reply('Вага продукту')
+    except Exception as e:
+        print(e)
+        await message.reply('Виникла помилка, ви ввели не ціле число!')
 
 async def cm_reg_weight(message : types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['Weight'] = int(message.text)
-    await FSMAdd.next()
-    await message.reply('Одиниця виміру')
+    try:
+        async with state.proxy() as data:
+            data['Weight'] = int(message.text)
+        await FSMAdd.next()
+        await message.reply('Одиниця виміру')
+    except Exception as e:
+        print(e)
+        await message.reply('Виникла помилка, ви ввели не ціле число!')
 
 async def cm_reg_unit(message : types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['Unit'] = int(message.text)
-    await FSMAdd.next()
-    await message.reply('Кількість')
+    try:
+        async with state.proxy() as data:
+            data['Unit'] = int(message.text)
+        await FSMAdd.next()
+        await message.reply('Кількість')
+    except Exception as e:
+        print(e)
+        await message.reply('Виникла помилка, ви ввели не ціле число!')
     
 async def cm_reg_num(message : types.Message, state: FSMContext):
-    async with state.proxy() as data:
-        data['Num'] = int(message.text)
-    await FSMAdd.next()
-    await message.reply('Дата споживання')
+    try:
+        async with state.proxy() as data:
+            data['Num'] = int(message.text)
+        await FSMAdd.next()
+        await message.reply('Дата споживання')
+    except Exception as e:
+        print(e)
+        await message.reply('Виникла помилка, ви ввели не ціле число!')
 
 async def cm_reg_date(message : types.Message, state: FSMContext):
     async with state.proxy() as data:
@@ -100,13 +124,13 @@ async def cm_reg_date(message : types.Message, state: FSMContext):
     await pku_db.sql_register_products(state, User_ID)
     await state.finish()
         
-# Функція перегляду;
+# Функція перегляду записів; Record viewing function
 async def view_month_cm(message : types.Message):
     await bot.send_message(message.from_user.id, 
         f'Перегляд історії спожитих продуктів {message.from_user.first_name} за місяць:')
     await pku_db.sql_view_month(message)
 
-# Загальний декоратор функцій;
+# Загальний декоратор функцій; Generic function decorator
 def register_handlers_client(dp : Dispatcher): # Декоратор, обробка подій; Deorator, event handler
     dp.register_message_handler(command_start, commands=['start', 'help'])
     dp.register_message_handler(cancel_handler, state="*", commands='cancel')
@@ -122,3 +146,4 @@ def register_handlers_client(dp : Dispatcher): # Декоратор, оброб�
     dp.register_message_handler(cm_reg_num, state=FSMAdd.Num)
     dp.register_message_handler(cm_reg_date, state=FSMAdd.Date)
     dp.register_message_handler(view_month_cm, commands=['view'])
+    dp.register_callback_query_handler(pku_db.inline_bnts_logic)

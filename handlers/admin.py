@@ -7,7 +7,7 @@ from create_bot import dp, bot
 from keyboards import kb_admin
 from database import pku_db
 
-# Класи змінних, що представляють стовпці у базі даних;
+# Класи змінних, що представляють стовпці у базі даних; Variable classes representing columns in a database
 class FSMAdmin(StatesGroup):
     name_long = State()
     name_short = State()
@@ -24,20 +24,20 @@ class FSMDelete(StatesGroup):
 
 ID = None
 
-# Отримати ID адміністратора; 
+# Отримати ID адміністратора; Get admin ID
 async def make_changes(message : types.Message):
     global ID
     ID = message.from_user.id
     await bot.send_message(message.from_user.id, f'Добрий день, адміністратор {message.from_user.first_name}!', reply_markup=kb_admin)
     await message.delete()
 
-# Функція точки старту обробки додавання повідомлень;
+# Функція точки старту обробки додавання повідомлень; The function of the starting point of the processing of adding messages
 async def add_product_ad(message : types.Message):
     if message.from_user.id == ID:
         await FSMAdmin.name_long.set()
         await message.reply('Повна назва продукту', reply_markup=kb_admin)
 
-# Вихід зі станів
+# Вихід зі станів; Exiting states
 async def cancel_handler_ad(message : types.Message, state: FSMContext):
     if message.from_user.id == ID:
         current_state = await state.get_state()
@@ -61,49 +61,70 @@ async def cm_reg_name_s(message : types.Message, state: FSMContext):
         await message.reply('Категорія продукту')
 
 async def cm_reg_categ(message : types.Message, state: FSMContext):
-    if message.from_user.id == ID:
-        async with state.proxy() as data:
-            data['Categ'] = int(message.text)
-        await FSMAdmin.next()
-        await message.reply('Фенілаланін продукту за 100г.')
+    try:    
+        if message.from_user.id == ID:
+            async with state.proxy() as data:
+                data['Categ'] = int(message.text)
+            await FSMAdmin.next()
+            await message.reply('Фенілаланін продукту за 100г.')
+    except Exception as e:
+        print(e)
+        await message.reply('Виникла помилка, ви ввели не ціле число!')
 
 async def cm_reg_fa(message : types.Message, state: FSMContext):
-    if message.from_user.id == ID:
-        async with state.proxy() as data:
-            data['FA'] = int(message.text)
-        await FSMAdmin.next()
-        await message.reply('Білок продукту')
+    try:    
+        if message.from_user.id == ID:
+            async with state.proxy() as data:
+                data['FA'] = int(message.text)
+            await FSMAdmin.next()
+            await message.reply('Білок продукту')
+    except Exception as e:
+        print(e)
+        await message.reply('Виникла помилка, ви ввели не ціле число!')
 
 async def cm_reg_protein(message : types.Message, state: FSMContext):
-    if message.from_user.id == ID:
-        async with state.proxy() as data:
-            data['Protein'] = int(message.text)
-        await FSMAdmin.next()
-        await message.reply('Вага продукту')
+    try:    
+        if message.from_user.id == ID:
+            async with state.proxy() as data:
+                data['Protein'] = int(message.text)
+            await FSMAdmin.next()
+            await message.reply('Вага продукту')
+    except Exception as e:
+        print(e)
+        await message.reply('Виникла помилка, ви ввели не ціле число!')
 
 async def cm_reg_weight(message : types.Message, state: FSMContext):
-    if message.from_user.id == ID:
-        async with state.proxy() as data:
-            data['Weight'] = int(message.text)
-        await FSMAdmin.next()
-        await message.reply('Одиниця виміру')
+    try:
+        if message.from_user.id == ID:
+            async with state.proxy() as data:
+                data['Weight'] = int(message.text)
+            await FSMAdmin.next()
+            await message.reply('Одиниця виміру')
+    except Exception as e:
+        print(e)
+        await message.reply('Виникла помилка, ви ввели не ціле число!')
 
 async def cm_reg_unit(message : types.Message, state: FSMContext):
-    if message.from_user.id == ID:
-        async with state.proxy() as data:
-            data['Unit'] = int(message.text)
-
-        # async with state.proxy() as data:
-        #     await message.reply(str(data))
-        await FSMAdmin.next()
-        await message.reply('Кількість')
+    try:
+        if message.from_user.id == ID:
+            async with state.proxy() as data:
+                data['Unit'] = int(message.text)
+            await FSMAdmin.next()
+            await message.reply('Кількість')
+    except Exception as e:
+        print(e)
+        await message.reply('Виникла помилка, ви ввели не ціле число!')
     
 async def cm_reg_num(message : types.Message, state: FSMContext):
-    if message.from_user.id == ID:
-        async with state.proxy() as data:
-            data['Num'] = int(message.text)
-        await FSMAdmin.next()
-        await message.reply('Дата споживання')
+    try:    
+        if message.from_user.id == ID:
+            async with state.proxy() as data:
+                data['Num'] = int(message.text)
+            await FSMAdmin.next()
+            await message.reply('Дата споживання')
+    except Exception as e:
+        print(e)
+        await message.reply('Виникла помилка, ви ввели не ціле число!')
 
 async def cm_reg_date(message : types.Message, state: FSMContext):
     if message.from_user.id == ID:
@@ -114,11 +135,15 @@ async def cm_reg_date(message : types.Message, state: FSMContext):
         await pku_db.sql_register_products(state, str(ID))
         await state.finish()
 
-# Функція точки старту обробки видалення повідомлень;
+# Функція точки старту обробки видалення повідомлень; The function of the starting point of the processing of deleting messages
 async def del_product_ad(message : types.Message):
-    if message.from_user.id == ID:
-        await FSMDelete.id_product.set()
-        await message.reply('Напиши id продукту, що треба видалити.', reply_markup=kb_admin)
+    try:
+        if message.from_user.id == ID:
+            await FSMDelete.id_product.set()
+            await message.reply('Напиши id продукту, що треба видалити.', reply_markup=kb_admin)
+    except Exception as e:
+        print(e)
+        await message.reply('Виникла помилка, ви ввели не ціле число!')
 
 async def set_productId(message : types.Message, state: FSMContext):
     try:
@@ -135,14 +160,14 @@ async def set_productId(message : types.Message, state: FSMContext):
             await message.reply(message.from_user.id, f'{message.from_user.first_name} у записі були букви!')
             await message.delete()
         
-# Функція перегляду;
+# Функція перегляду записів; Record viewing function
 async def view_ad(message : types.Message):
     if message.from_user.id == ID:
         await bot.send_message(message.from_user.id, 
             f'Перегляд історії спожитих продуктів {message.from_user.first_name} за місяць:')
         await pku_db.sql_view_month(message)
 
-# Загальний декоратор функцій;
+# Загальний декоратор функцій; Generic function decorator
 def register_handlers_admin(dp : Dispatcher): # Декоратор, обробка подій; Deorator, event handler
     dp.register_message_handler(make_changes, commands=['admin'], is_chat_admin=True)
     dp.register_message_handler(cancel_handler_ad, state="*", commands='cancel_ad')
@@ -160,3 +185,4 @@ def register_handlers_admin(dp : Dispatcher): # Декоратор, обробк
     dp.register_message_handler(del_product_ad, commands=['del_product_ad'], state=None)
     dp.register_message_handler(set_productId, state=FSMDelete.id_product)
     dp.register_message_handler(view_ad, commands=['view_ad'])
+    dp.register_callback_query_handler(pku_db.inline_bnts_logic)

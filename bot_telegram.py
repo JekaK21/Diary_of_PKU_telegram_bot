@@ -3,7 +3,7 @@ from aiogram.utils import executor
 from create_bot import dp
 from handlers import client, admin
 from database import pku_db
-# Файл входу, старт бота Login file, start the bot
+# Файл входу, старт бота; Login file, start the bot
 async def on_startup(_):
     print('Бот вийшов у онлайн.')
     pku_db.sql_start()

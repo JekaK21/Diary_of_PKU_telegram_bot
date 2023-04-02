@@ -15,6 +15,9 @@ kb = InlineKeyboardMarkup().row(
     InlineKeyboardButton('<-', callback_data='prev'),
     InlineKeyboardButton('->', callback_data='next')
 )
+prev_kb = InlineKeyboardMarkup().add(
+    InlineKeyboardButton('<-', callback_data='prev')
+)
 
 # Додавання кнопок, розположення; Adding buttons, location
 url.add(url_info)
